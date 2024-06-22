@@ -24,7 +24,7 @@ camera.position.set(0, 10, 15);
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = false;
 controls.screenSpacePanning = false;
-controls.enableRotate = false; 
+controls.enableRotate = true; 
 controls.maxPolarAngle = Math.PI / 2;
 controls.minDistance = 5;
 controls.maxDistance = 20;
@@ -34,7 +34,7 @@ light.position.z = 20;
 scene.add(light);
 
 controls.addEventListener('change', () => {
-    camera.position.y = 10;
+    //camera.position.y = 10;
     updateGrid(scene, camera, gridWidth, gridHeight, tileSize, offsetRange, seed);
 });
 

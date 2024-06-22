@@ -21,21 +21,17 @@ export function render(renderer, scene, camera) {
     animate();
 }
 
-function updateTrees(scene, vertices, gridWidth, gridHeight) {
+function updateTrees(scene, vertices) {
+    // Remove old trees
     scene.children = scene.children.filter(child => !(child.isMesh && child.material.color.getHex() === 0x228B22));
 
-    for (let y = 0; y < gridHeight; y++) {
-        for (let x = 0; x < gridWidth; x++) {
-            const index = y * gridWidth + x;
-            const vertex = vertices[index];
-
-            if (vertex.y > 0.2 && vertex.y < 0.5) {
-                const tree = createTree();
-                tree.position.set(vertex.x, vertex.y + 0.4, vertex.z);
-                scene.add(tree);
-            }
+    vertices.forEach(vertex => {
+        if (vertex && vertex.y > 0.2 && vertex.y < 0.5) {
+            const tree = createTree();
+            tree.position.set(vertex.x, vertex.y + 0.4, vertex.z);
+            scene.add(tree);
         }
-    }
+    });
 }
 
 let previousOffsetX = 0;

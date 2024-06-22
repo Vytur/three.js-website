@@ -66,24 +66,41 @@ export function createGrid(gridWidth, gridHeight, tileSize, offsetRange, seed) {
     return { geometry, vertices };
 }
 
-export function createTile(x, y, tileSize, offsetRange, seed) {
-    const noise2D = new createNoise2D(seedrandom(seed));
-    const xOffset = getRandomOffset(offsetRange);
-    const yOffset = getRandomOffset(offsetRange);
-    const zOffset = noise2D(x / 10, y / 10);
+export function createTile(tileX, tileY, tileSize, offsetRange, seed) {
+    const rng = seedrandom(seed);
+    const noise2D = createNoise2D(rng);
+    const vertices = [];
+    const positions = [];
 
-    const vertex = new THREE.Vector3(
-        x * tileSize + xOffset,
-        zOffset,
-        y * tileSize + yOffset
-    );
+    // Create vertices for the tile
+    for (let y = 0; y <= 1; y++) {
+        for (let x = 0; x <= 1; x++) {
+            const xOffset = getRandomOffset(offsetRange);
+            const yOffset = getRandomOffset(offsetRange);
+            const zOffset = noise2D((tileX + x) / 10, (tileY + y) / 10);
 
+            const vertex = new THREE.Vector3(
+                (tileX + x) * tileSize + xOffset,
+                zOffset,
+                (tileY + y) * tileSize + yOffset
+            );
+            vertices.push(vertex);
+            positions.push(vertex.x, vertex.y, vertex.z);
+        }
+    }
+
+    // Create the geometry and set the positions
     const geometry = new THREE.BufferGeometry();
-    const positions = [vertex.x, vertex.y, vertex.z];
-
     geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
 
-    return { geometry, vertex };
+    // Create indices for two triangles
+    const indices = [
+        0, 1, 2,
+        2, 1, 3
+    ];
+    geometry.setIndex(indices);
+
+    return { geometry, vertices };
 }
 
 // Function to create a tree mesh (example element)

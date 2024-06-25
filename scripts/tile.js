@@ -85,7 +85,13 @@ export class Tile {
   removeFromScene(scene) {
     if (this.mesh) {
       scene.remove(this.mesh);
-      if(this.forest) scene.remove(this.forest); 
+      this.mesh.geometry.dispose();
+      this.mesh.material.dispose();
+      if(this.forest) {    
+        scene.remove(this.forest); 
+        this.forest.geometry.dispose();
+        this.forest.material.dispose();
+        }
     }
   }
 }

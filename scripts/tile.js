@@ -1,14 +1,11 @@
 import * as THREE from "three";
 import { createNoise2D } from "simplex-noise";
 import seedrandom from "seedrandom";
+import { Biome } from './biome.js';
 
 function getRandomOffset(range, rng) {
   return (rng - 0.5) * range * 2;
 }
-
-//function getRandomOffset(range) {
-//    return (Math.random() - 0.5) * range * 2;
-//}
 
 export class Tile {
   constructor(x, y, tileSize, offsetRange, seed) {
@@ -25,16 +22,17 @@ export class Tile {
 
   createTile() {
     const rng = seedrandom(this.seed);
-    const noise2D = new createNoise2D(rng);
+    const biome = new Biome(this.seed);
 
     const vertices = [];
     const positions = [];
+    const colors = [];
 
     for (let y = 0; y <= 1; y++) {
       for (let x = 0; x <= 1; x++) {
-        const zOffset = noise2D((this.x + x) / 10, (this.y + y) / 10);
-        const xOffset = getRandomOffset(this.offsetRange, noise2D(this.x + x, this.y + y));
-        const yOffset = getRandomOffset(this.offsetRange, noise2D(this.x + x, this.y + y));
+        const zOffset = biome.noise2D((this.x + x) / 10, (this.y + y) / 10);
+        const xOffset = getRandomOffset(this.offsetRange, zOffset); //noise
+        const yOffset = getRandomOffset(this.offsetRange, xOffset);
 
         const vertex = new THREE.Vector3(
           (this.x + x) * this.tileSize + xOffset,
@@ -43,6 +41,10 @@ export class Tile {
         );
         vertices.push(vertex);
         positions.push(vertex.x, vertex.y, vertex.z);
+
+        const biomeType = biome.getBiome(this.x + x, this.y + y);
+        const color = new THREE.Color(biome.getBiomeColor(biomeType));
+        colors.push(color.r, color.g, color.b);
       }
     }
 
@@ -54,9 +56,10 @@ export class Tile {
       "position",
       new THREE.Float32BufferAttribute(positions, 3)
     );
+    geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
 
     // Create indices for two triangles
-    const indices = [0, 1, 2, 2, 1, 3];
+    const indices = [0, 2, 1, 1, 2, 3];
     geometry.setIndex(indices);
 
     this.geometry = geometry;
@@ -65,7 +68,7 @@ export class Tile {
   createMesh() {
     const material = new THREE.MeshBasicMaterial({
       color: 0x00ff00,
-      wireframe: true,
+      wireframe: false,
     });
     this.mesh = new THREE.Mesh(this.geometry, material);
   }

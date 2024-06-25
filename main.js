@@ -23,7 +23,7 @@ controls.minDistance = 5;
 controls.maxDistance = 20;
 
 const light = new THREE.DirectionalLight(0xffffff, 1);
-light.position.z = 20;
+light.position.z = 30;
 scene.add(light);
 
 let lastUpdatePosition = new THREE.Vector3(

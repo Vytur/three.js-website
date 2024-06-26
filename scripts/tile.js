@@ -17,6 +17,8 @@ export class Tile {
     this.geometry = null;
     this.mesh = null;
     this.forest = null;
+    this.biomeType = "plains";
+    this.color = null;
     this.createTile();
   }
 
@@ -31,8 +33,8 @@ export class Tile {
     for (let y = 0; y <= 1; y++) {
       for (let x = 0; x <= 1; x++) {
         const zOffset = biome.noise2D((this.x + x) / 10, (this.y + y) / 10);
-        const xOffset = getRandomOffset(this.offsetRange, zOffset); //noise
-        const yOffset = getRandomOffset(this.offsetRange, xOffset);
+        const xOffset = getRandomOffset(this.offsetRange, biome.noise2D(this.x + x, this.y + y)); //biome.noise2D(this.x + x, this.y + y)
+        const yOffset = getRandomOffset(this.offsetRange, biome.noise2D(this.x + x, this.y + y));
 
         const vertex = new THREE.Vector3(
           (this.x + x) * this.tileSize + xOffset,
@@ -42,9 +44,9 @@ export class Tile {
         vertices.push(vertex);
         positions.push(vertex.x, vertex.y, vertex.z);
 
-        const biomeType = biome.getBiome(this.x + x, this.y + y);
-        const color = new THREE.Color(biome.getBiomeColor(biomeType));
-        colors.push(color.r, color.g, color.b);
+        this.biomeType = biome.getBiome(this.x + x, this.y + y);
+        this.color = new THREE.Color(biome.getBiomeColor(this.biomeType));
+        colors.push(this.color.r, this.color.g, this.color.b);
       }
     }
 
@@ -66,17 +68,19 @@ export class Tile {
   }
 
   createMesh() {
-    const material = new THREE.MeshBasicMaterial({
-      color: 0x00ff00,
-      wireframe: false,
+    const material = new THREE.MeshToonMaterial({
+      color: this.color,
+      wireframe: false
     });
     this.mesh = new THREE.Mesh(this.geometry, material);
+    this.mesh.receiveShadow = true;
   }
 
   createForest() {
     const geometry = new THREE.ConeGeometry(0.2, 1, 8);
-    const material = new THREE.MeshBasicMaterial({ color: 0x228b22 });
+    const material = new THREE.MeshToonMaterial({ color: 0x228b22 });
     const forest = new THREE.Mesh(geometry, material);
+    forest.castShadow = true;
     this.addForest(forest);
     return forest;
   }

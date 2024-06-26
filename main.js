@@ -23,7 +23,10 @@ controls.minDistance = 5;
 controls.maxDistance = 20;
 
 const light = new THREE.DirectionalLight(0xffffff, 1);
-light.position.z = 30;
+light.position.set(0, 2, 2);
+light.castShadow = true;
+light.shadowDarkness = 0.5;
+light.shadowCameraVisible = true;
 scene.add(light);
 
 let lastUpdatePosition = new THREE.Vector3(

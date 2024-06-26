@@ -9,7 +9,7 @@ export class Biome {
 
     // Function to get biome type based on noise value
     getBiome(x, y) {
-        const noiseValue = this.noise2D(x / 10, y / 10); // Adjust scale as needed
+        const noiseValue = this.noise2D(x / 20, y / 20); // Adjust scale as needed
         if (noiseValue < -0.2) {
             return 'water';
         } else if (noiseValue < 0.0) {

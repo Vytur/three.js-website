@@ -2,9 +2,8 @@ import * as THREE from "three";
 import { createScene, render } from "./scripts/scene.js";
 import { updateGrid } from "./scripts/grid.js";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import { setupMouseInteraction } from './scripts/interactions.js';
 
-const gridWidth = 20; // Number of columns
-const gridHeight = 20; // Number of rows
 const tileSize = 1; // Size of each tile
 const offsetRange = 0.3; // Maximum offset within each tile
 const seed = "1";
@@ -12,15 +11,16 @@ const seed = "1";
 // Set up the scene, camera, and renderer
 const { scene, camera, renderer } = createScene();
 
+setupMouseInteraction(scene, camera);
+
 camera.position.set(0, 10, 15);
 
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = false;
 controls.screenSpacePanning = false;
 controls.enableRotate = false;
+controls.enableZoom = false;
 controls.maxPolarAngle = Math.PI / 2;
-controls.minDistance = 5;
-controls.maxDistance = 20;
 
 const light = new THREE.DirectionalLight(0xffffff, 1);
 light.position.set(0, 2, 2);

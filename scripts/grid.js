@@ -10,7 +10,7 @@ const createdTiles = {};
 
 export function updateGrid(scene, camera, tileSize, offsetRange, seed) {
   const offsetX = Math.floor(camera.position.x / tileSize);
-  const offsetY = Math.floor((camera.position.z - 20) / tileSize);
+  const offsetY = Math.floor((camera.position.z - 14) / tileSize);
 
   if (offsetX === previousOffsetX && offsetY === previousOffsetY) {
     return;
@@ -19,7 +19,7 @@ export function updateGrid(scene, camera, tileSize, offsetRange, seed) {
   previousOffsetX = offsetX;
   previousOffsetY = offsetY;
 
-  const visibleRange = 10;
+  const visibleRange = 12;
   const newTiles = [];
   const newVertices = [];
 

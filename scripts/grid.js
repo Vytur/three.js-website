@@ -67,7 +67,7 @@ function updateForest(scene, tile, seed) {
   const vertex = tile.vertices[0];
   if (vertex && vertex.y > 0.2 && vertex.y < 0.5 && rng() > 0.1) {
     tile.createForest();
-    tile.forest.position.set(vertex.x, vertex.y + 0.4, vertex.z);
+    //tile.forest.position.set(vertex.x, vertex.y + 0.4, vertex.z);
     scene.add(tile.forest);
   }
 }

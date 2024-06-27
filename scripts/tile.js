@@ -19,20 +19,25 @@ export class Tile {
     this.forest = null;
     this.biomeType = "plains";
     this.color = null;
+    this.center = null;
     this.createTile();
   }
 
   createTile() {
-    const rng = seedrandom(this.seed);
     const biome = new Biome(this.seed);
 
     const vertices = [];
     const positions = [];
     const colors = [];
 
+    const biomeStats = biome.getBiome(this.x, this.y);
+    this.biomeType = biomeStats.biomeName;
+    this.color = new THREE.Color(biome.getBiomeColor(this.biomeType));
+    colors.push(this.color.r, this.color.g, this.color.b);
+
     for (let y = 0; y <= 1; y++) {
       for (let x = 0; x <= 1; x++) {
-        const zOffset = biome.noise2D((this.x + x) / 20, (this.y + y) / 20);
+        const zOffset = biomeStats.correlation;
         const xOffset = getRandomOffset(this.offsetRange, biome.noise2D(this.x + x, this.y + y)); //biome.noise2D(this.x + x, this.y + y)
         const yOffset = getRandomOffset(this.offsetRange, biome.noise2D(this.x + x, this.y + y));
 
@@ -43,14 +48,13 @@ export class Tile {
         );
         vertices.push(vertex);
         positions.push(vertex.x, vertex.y, vertex.z);
-
-        this.biomeType = biome.getBiome(this.x + x, this.y + y);
-        this.color = new THREE.Color(biome.getBiomeColor(this.biomeType));
-        colors.push(this.color.r, this.color.g, this.color.b);
       }
     }
 
     this.vertices = vertices;
+
+    this.center = new THREE.Vector3();
+    this.center.addVectors(vertices[0], vertices[3]).multiplyScalar(0.5);
 
     const geometry = new THREE.BufferGeometry();
 
@@ -87,6 +91,7 @@ export class Tile {
 
   addForest(forest) {
     this.forest = forest;
+    this.forest.position.set(this.center.x, this.center.y + 0.4, this.center.z);
   }
 
   removeFromScene(scene) {

@@ -9,18 +9,28 @@ export class Biome {
 
     // Function to get biome type based on noise value
     getBiome(x, y) {
-        const noiseValue = this.noise2D(x / 20, y / 20); // Adjust scale as needed
+        const noiseValue = this.noise2D(x / 20, y / 20);
+
+        let biomeName;
+        let correlation;
         if (noiseValue < -0.2) {
-            return 'water';
+            biomeName = 'water';
+            correlation = -0.2;
         } else if (noiseValue < 0.0) {
-            return 'beach';
+            biomeName = 'beach';
+            correlation = noiseValue;
         } else if (noiseValue < 0.3) {
-            return 'forest';
+            biomeName = 'forest';
+            correlation = noiseValue;
         } else if (noiseValue < 0.6) {
-            return 'plains';
+            biomeName = 'plains';
+            correlation = noiseValue;
         } else {
-            return 'mountain';
+            biomeName = 'mountain';
+            correlation = noiseValue;
         }
+
+        return { biomeName, correlation };
     }
 
     // Function to get biome color based on biome type

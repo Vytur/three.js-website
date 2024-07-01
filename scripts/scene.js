@@ -1,4 +1,9 @@
 import * as THREE from "three";
+import Stats from 'stats.js'
+
+const stats = new Stats()
+stats.showPanel(0);
+document.body.appendChild(stats.dom);
 
 export function createScene() {
   const scene = new THREE.Scene();
@@ -34,8 +39,11 @@ export function createScene() {
 
 export function render(renderer, scene, camera) {
   function animate() {
-    requestAnimationFrame(animate);
+    stats.begin();
     renderer.render(scene, camera);
+    stats.end();
+
+    requestAnimationFrame(animate);
   }
   animate();
 }

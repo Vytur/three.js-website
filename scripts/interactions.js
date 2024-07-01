@@ -38,7 +38,7 @@ export function setupMouseInteraction(scene, camera) {
         // Retrieve and log the tile coordinates
         const tileCoordinates = mesh.userData.tileCoordinates;
         if (tileCoordinates) {
-            console.log(`Hovered tile coordinates: x=${tileCoordinates.x}, y=${tileCoordinates.y}`);
+            //console.log(`Hovered tile coordinates: x=${tileCoordinates.x}, y=${tileCoordinates.y}`);
         }
     }
 

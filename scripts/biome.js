@@ -16,7 +16,7 @@ export class Biome {
         let correlation;
         if (noiseValue < -0.4) {
             biomeName = 'ocean';
-            correlation = -0.2;
+            correlation = -0.21;
         } else if (noiseValue < -0.2) {
             biomeName = 'water';
             correlation = -0.2;

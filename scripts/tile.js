@@ -73,6 +73,7 @@ export class Tile {
     // Create indices for two triangles
     const indices = [0, 2, 1, 1, 2, 3];
     geometry.setIndex(indices);
+    geometry.computeVertexNormals();
 
     this.geometry = geometry;
   }
@@ -101,18 +102,17 @@ export class Tile {
 
   createMesh() {
     const material = new THREE.MeshToonMaterial({
-      color: this.color,
-      wireframe: false
+      color: this.color
     });
     this.mesh = new THREE.Mesh(this.geometry, material);
     this.mesh.receiveShadow = true;
-
+    
     this.mesh.userData.tileCoordinates = { x: this.x, y: this.y };
   }
 
   createForest() {
     const geometry = new THREE.ConeGeometry(0.2, 1, 8);
-    const material = new THREE.MeshToonMaterial({ color: 0x228b22 });
+    const material = new THREE.MeshToonMaterial({ color: 0x225b22 });
     const forest = new THREE.Mesh(geometry, material);
     forest.castShadow = true;
     this.addForest(forest);

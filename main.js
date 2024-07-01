@@ -14,13 +14,12 @@ const tileSize = 1; // Size of each tile
 const offsetRange = 0.3; // Maximum offset within each tile
 
 socket.on("seed", (seed) => {
-
   // Set up the scene, camera, and renderer
   const { scene, camera, renderer } = createScene();
 
   setupMouseInteraction(scene, camera);
 
-  camera.position.set(0, 10, 15);
+  camera.position.set(0, 15, 15);
 
   const controls = new OrbitControls(camera, renderer.domElement);
   controls.enableDamping = false;
@@ -29,13 +28,6 @@ socket.on("seed", (seed) => {
   controls.enableZoom = false;
   controls.maxPolarAngle = Math.PI / 2;
 
-  const light = new THREE.DirectionalLight(0xffffff, 1);
-  light.position.set(0, 2, 2);
-  light.castShadow = true;
-  light.shadowDarkness = 0.5;
-  light.shadowCameraVisible = true;
-  scene.add(light);
-
   let lastUpdatePosition = new THREE.Vector3(
     Math.floor(camera.position.x),
     Math.floor(camera.position.y),
@@ -43,7 +35,7 @@ socket.on("seed", (seed) => {
   );
 
   controls.addEventListener("change", () => {
-    camera.position.y = 10;
+    camera.position.y = 15;
     const currentPosition = new THREE.Vector3(
       Math.floor(camera.position.x),
       Math.floor(camera.position.y),

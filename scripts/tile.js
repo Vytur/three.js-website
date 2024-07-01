@@ -20,6 +20,7 @@ export class Tile {
     this.biomeType = "plains";
     this.color = null;
     this.center = null;
+    this.area = 0;
     this.createTile();
   }
 
@@ -53,8 +54,13 @@ export class Tile {
 
     this.vertices = vertices;
 
-    this.center = new THREE.Vector3();
-    this.center.addVectors(vertices[0], vertices[3]).multiplyScalar(0.5);
+    this.center = new THREE.Vector3(
+      (vertices[0].x + vertices[1].x + vertices[2].x + vertices[3].x) / 4,
+      (vertices[0].y + vertices[1].y + vertices[2].y + vertices[3].y) / 4,
+      (vertices[0].z + vertices[1].z + vertices[2].z + vertices[3].z) / 4
+    );
+
+    this.area = this.calculateArea(vertices);
 
     const geometry = new THREE.BufferGeometry();
 
@@ -69,6 +75,28 @@ export class Tile {
     geometry.setIndex(indices);
 
     this.geometry = geometry;
+  }
+
+  calculateArea(vertices) {
+    const v0 = vertices[0];
+    const v1 = vertices[1];
+    const v2 = vertices[2];
+    const v3 = vertices[3];
+
+    // Triangle 1: v0, v1, v2
+    const edge1 = new THREE.Vector3().subVectors(v1, v0);
+    const edge2 = new THREE.Vector3().subVectors(v2, v0);
+    const crossProduct1 = new THREE.Vector3().crossVectors(edge1, edge2);
+    const area1 = crossProduct1.length() * 0.5;
+
+    // Triangle 2: v0, v2, v3
+    const edge3 = new THREE.Vector3().subVectors(v2, v0);
+    const edge4 = new THREE.Vector3().subVectors(v3, v0);
+    const crossProduct2 = new THREE.Vector3().crossVectors(edge3, edge4);
+    const area2 = crossProduct2.length() * 0.5;
+
+    // Total area
+    return area1 + area2;
   }
 
   createMesh() {

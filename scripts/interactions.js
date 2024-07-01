@@ -34,6 +34,12 @@ export function setupMouseInteraction(scene, camera) {
             mesh.userData.originalMaterial = mesh.material.clone();
         }
         mesh.material.emissive.setHex(0x00ff00);
+
+        // Retrieve and log the tile coordinates
+        const tileCoordinates = mesh.userData.tileCoordinates;
+        if (tileCoordinates) {
+            console.log(`Hovered tile coordinates: x=${tileCoordinates.x}, y=${tileCoordinates.y}`);
+        }
     }
 
     function clearMeshHover() {

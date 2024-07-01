@@ -1,4 +1,5 @@
 import { createNoise2D } from 'simplex-noise';
+import * as THREE from 'three';
 import seedrandom from 'seedrandom';
 
 // Biome class to determine the biome type based on noise values
@@ -13,7 +14,10 @@ export class Biome {
 
         let biomeName;
         let correlation;
-        if (noiseValue < -0.2) {
+        if (noiseValue < -0.4) {
+            biomeName = 'ocean';
+            correlation = -0.2;
+        } else if (noiseValue < -0.2) {
             biomeName = 'water';
             correlation = -0.2;
         } else if (noiseValue < 0.0) {
@@ -34,20 +38,16 @@ export class Biome {
     }
 
     // Function to get biome color based on biome type
-    getBiomeColor(biome) {
-        switch (biome) {
-            case 'water':
-                return 0x0000ff; // Blue
-            case 'beach':
-                return 0xffff00; // Yellow
-            case 'forest':
-                return 0x008000; // Green
-            case 'plains':
-                return 0x00ff00; // Light Green
-            case 'mountain':
-                return 0x808080; // Grey
-            default:
-                return 0xffffff; // White
-        }
+    getBiomeColor(biomeName) {
+        return softColorPalette[biomeName];
     }
 }
+
+const softColorPalette = {
+    water: new THREE.Color(0x6495ed),   // Soft blue
+    ocean: new THREE.Color(0x4682b4),   // Deep blue
+    beach: new THREE.Color(0xfff5ba),   // Soft yellowish sand
+    forest: new THREE.Color(0x228b22),  // Soft green
+    plains: new THREE.Color(0x7cfc00),  // Lime green
+    mountain: new THREE.Color(0xd3d3d3) // Light gray
+};

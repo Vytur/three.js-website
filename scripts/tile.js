@@ -16,7 +16,7 @@ export class Tile {
     this.seed = seed;
     this.geometry = null;
     this.mesh = null;
-    this.forest = null;
+    this.building = null;
     this.biomeType = "plains";
     this.color = null;
     this.center = null;
@@ -39,7 +39,7 @@ export class Tile {
       for (let x = 0; x <= 1; x++) {
         const zOffset = biomeStats.correlation;
         const xOffset = getRandomOffset(this.offsetRange, biome.noise2D(this.x + x, this.y + y)); //biome.noise2D(this.x + x, this.y + y)
-        const yOffset = getRandomOffset(this.offsetRange, biome.noise2D(this.x + x, this.y + y));
+        const yOffset = getRandomOffset(this.offsetRange, biome.noise2D(this.y + y, this.x + x));
 
         const vertex = new THREE.Vector3(
           (this.x + x) * this.tileSize + xOffset,
@@ -78,6 +78,8 @@ export class Tile {
     });
     this.mesh = new THREE.Mesh(this.geometry, material);
     this.mesh.receiveShadow = true;
+
+    this.mesh.userData.tileCoordinates = { x: this.x, y: this.y };
   }
 
   createForest() {
@@ -90,8 +92,8 @@ export class Tile {
   }
 
   addForest(forest) {
-    this.forest = forest;
-    this.forest.position.set(this.center.x, this.center.y + 0.4, this.center.z);
+    this.building = forest;
+    this.building.position.set(this.center.x, this.center.y + 0.4, this.center.z);
   }
 
   removeFromScene(scene) {
@@ -99,10 +101,10 @@ export class Tile {
       scene.remove(this.mesh);
       this.mesh.geometry.dispose();
       this.mesh.material.dispose();
-      if(this.forest) {    
-        scene.remove(this.forest); 
-        this.forest.geometry.dispose();
-        this.forest.material.dispose();
+      if(this.building) {    
+        scene.remove(this.building); 
+        this.building.geometry.dispose();
+        this.building.material.dispose();
         }
     }
   }

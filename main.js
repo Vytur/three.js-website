@@ -42,8 +42,9 @@ function showAuthForms() {
   registerForm.id = 'registerForm';
   registerForm.innerHTML = `
       <h2>Register</h2>
-      <input type="text" id="registerUsername" placeholder="Username" required>
-      <input type="password" id="registerPassword" placeholder="Password" required>
+      <input type="text" id="registerUsername" placeholder="Username (min. 3 characters)" required minlength="3">
+      <input type="email" id="registerEmail" placeholder="Email" required>
+      <input type="password" id="registerPassword" placeholder="Password (8-16 characters)" required minlength="8" maxlength="16">
       <button type="submit">Register</button>
   `;
   authContainer.appendChild(registerForm);
@@ -74,12 +75,26 @@ function showAuthForms() {
   registerForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const username = document.getElementById('registerUsername').value;
+      const email = document.getElementById('registerEmail').value;
       const password = document.getElementById('registerPassword').value;
+
+       // Validate email format using regex
+       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+       if (!emailRegex.test(email)) {
+           alert('Please enter a valid email address');
+           return;
+       }
+
+      const userData = {
+          username,
+          password,
+          email
+      };
 
       const response = await fetch('http://localhost:3000/register', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username, password })
+          body: JSON.stringify(userData)
       });
 
       const data = await response.json();

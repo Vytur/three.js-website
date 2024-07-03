@@ -4,5 +4,29 @@
 	width: 100%;
 	text-align: center;
 	z-index: 100;
-	display:block;
+	display: block;
+}
+
+body {
+	margin: 0;
+	overflow: hidden;
+}
+
+#infoPanel {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	width: 300px;
+	padding: 10px;
+	background-color: rgba(255, 255, 255, 0.8);
+	border-radius: 5px;
+	display: none;
+}
+
+#infoPanel h2 {
+	margin-top: 0;
+}
+
+#infoPanel button {
+	margin-top: 10px;
 }

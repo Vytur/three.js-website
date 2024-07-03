@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { showInfo } from './tilePanel.js';
 
 export function setupMouseInteraction(scene, camera) {
     const raycaster = new THREE.Raycaster();
@@ -6,6 +7,7 @@ export function setupMouseInteraction(scene, camera) {
     let hoveredMesh = null;
 
     window.addEventListener('mousemove', onMouseMove);
+    window.addEventListener('click', onMouseClick);
 
     function onMouseMove(event) {
         mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
@@ -26,6 +28,26 @@ export function setupMouseInteraction(scene, camera) {
         } else {
             clearMeshHover();
             hoveredMesh = null;
+        }
+    }
+
+    function onMouseClick(event) {
+        mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+        mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+        raycaster.setFromCamera(mouse, camera);
+
+        const intersects = raycaster.intersectObjects(scene.children, false);
+
+        if (intersects.length > 0) {
+            const mesh = intersects.find(intersect => !intersect.object.userData.ignoreHover)?.object;
+
+            if (mesh) {
+                const tileCoordinates = mesh.userData.tileCoordinates;
+                if (tileCoordinates) {
+                    showInfo(tileCoordinates.x, tileCoordinates.y, mesh.userData.building);
+                }
+            }
         }
     }
 

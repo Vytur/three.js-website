@@ -1,5 +1,4 @@
 import * as THREE from "three";
-import { createNoise2D } from "simplex-noise";
 import { Tile } from "./tile";
 import seedrandom from "seedrandom";
 
@@ -56,18 +55,17 @@ export function updateGrid(scene, camera, tileSize, offsetRange, seed) {
   newTiles.forEach((tile) => {
     if (!scene.children.includes(tile.mesh)) {
       // Update trees
-      updateForest(scene, tile, seed);
+      updateBuildings(scene, tile, seed);
       scene.add(tile.mesh);
     }
   });
 }
 
-function updateForest(scene, tile, seed) {
+function updateBuildings(scene, tile, seed) {
   const rng = seedrandom(seed);
   const vertex = tile.vertices[0];
   if (vertex && vertex.y > 0.2 && vertex.y < 0.5 && rng() > 0.1) {
     tile.createForest();
-    //tile.forest.position.set(vertex.x, vertex.y + 0.4, vertex.z);
-    scene.add(tile.building);
+    scene.add(tile.building.mesh);
   }
 }

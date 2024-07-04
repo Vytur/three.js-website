@@ -3,6 +3,9 @@ import { createScene, render } from "./scripts/scene.js";
 import { updateGrid } from "./scripts/grid.js";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { setupMouseInteraction } from "./scripts/interactions.js";
+import { Player } from "./scripts/player.js";
+
+const player = new Player();
 
 const socket = io("http://localhost:3000");
 
@@ -135,8 +138,8 @@ function initializeScene() {
 
   // Set up the scene, camera, and renderer
   const { scene, camera, renderer } = createScene();
-
-  setupMouseInteraction(scene, camera);
+  
+  setupMouseInteraction(scene, camera, player);
 
   camera.position.set(0, 15, 15);
 

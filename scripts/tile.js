@@ -131,7 +131,6 @@ export class Tile {
       if(this.building) {    
         scene.remove(this.building.mesh); 
         this.building.deleteBuildingMesh();
-        this.building = null;
         }
     }
   }

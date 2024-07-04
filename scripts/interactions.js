@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { showInfo } from './tilePanel.js';
 
-export function setupMouseInteraction(scene, camera) {
+export function setupMouseInteraction(scene, camera, player) {
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
     let hoveredMesh = null;
@@ -45,7 +45,7 @@ export function setupMouseInteraction(scene, camera) {
             if (mesh) {
                 const tileCoordinates = mesh.userData.tileCoordinates;
                 if (tileCoordinates) {
-                    showInfo(tileCoordinates.x, tileCoordinates.y, mesh.userData.building);
+                    showInfo(mesh.userData, player);
                 }
             }
         }
@@ -56,12 +56,6 @@ export function setupMouseInteraction(scene, camera) {
             mesh.userData.originalMaterial = mesh.material.clone();
         }
         mesh.material.emissive.setHex(0x00ff00);
-
-        // Retrieve and log the tile coordinates
-        const tileCoordinates = mesh.userData.tileCoordinates;
-        if (tileCoordinates) {
-            //console.log(`Hovered tile coordinates: x=${tileCoordinates.x}, y=${tileCoordinates.y}`);
-        }
     }
 
     function clearMeshHover() {

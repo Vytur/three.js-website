@@ -61,7 +61,7 @@ export function updateGrid(scene, camera, tileSize, offsetRange, seed) {
   });
 }
 
-function updateBuildings(scene, tile, seed) {
+export function updateBuildings(scene, tile, seed) {
   const rng = seedrandom(seed);
   const vertex = tile.vertices[0];
   if (vertex && vertex.y > 0.2 && vertex.y < 0.5 && rng() > 0.1) {

@@ -1,81 +1,64 @@
 import { Building } from "./building.js";
-import { GUI } from "lil-gui";
+import * as THREE from "three";
 
-let gui = null; // Declare gui as a let variable instead of const
+function createTextSprite(text) {
+  const canvas = document.createElement('canvas');
+  const context = canvas.getContext('2d');
+  const fontSize = 24;
+  context.font = `${fontSize}px Arial`;
+  canvas.width = context.measureText(text).width;
+  canvas.height = fontSize * 1.4;
 
-export function showInfo(meshData, player) {
-  if (!gui) {
-    gui = new GUI(); // Initialize gui if not already initialized
-  }
+  context.fillStyle = 'white';
+  context.textAlign = 'center';
+  context.fillText(text, canvas.width / 2, canvas.height / 2);
 
-  // Clear existing controllers (if applicable to your specific GUI library)
-  if (gui.removeAll) {
-    gui.removeAll(); // Example of removeAll() method if available
-  } else {
-    // Example of managing controllers individually or dynamically
-    gui.destroy(); // Example of destroying gui instance and creating a new one
-    gui = new GUI();
-  }
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.minFilter = THREE.LinearFilter;
+  texture.needsUpdate = true;
 
-  // Add player resources controller
-  gui.add(player, "resources").name("Your Resources").listen();
+  return texture;
+}
 
+export function updatePlayerResources(player, uiState) {
+  uiState.playerResourcesText.material.map = createTextSprite(`Your Resources: ${player.resources}`);
+}
+
+export function updateTileInfo(meshData, uiState) {
   if (meshData.building) {
-    // Add tile and building type controllers
-    gui
-      .add(
-        {
-          tile: `(${meshData.tileCoordinates.x}, ${meshData.tileCoordinates.y})`,
-        },
-        "tile"
-      )
-      .name("Tile")
-      .listen();
-    gui.add(meshData.building, "type").name("Building Type");
-    //gui.add(meshData.building, 'resources').name('Resources').listen();
-
-    // Create an upgrade folder and add controllers for building upgrades
-    const upgradeFolder = gui.addFolder("Upgrade");
-    upgradeFolder.add(meshData.building, "level").name("Level").listen();
-    upgradeFolder
-      .add({ upgrade: () => upgradeBuilding(meshData, player) }, "upgrade")
-      .name("Upgrade Building");
+    uiState.tileInfoText.material.map = createTextSprite(`Tile: (${meshData.tileCoordinates.x}, ${meshData.tileCoordinates.y})`);
+    uiState.buildingTypeText.material.map = createTextSprite(`Building Type: ${meshData.building.type}`);
+    uiState.upgradeLevelText.material.map = createTextSprite(`Level: ${meshData.building.level}`);
   } else {
-    // If no building is selected, add controllers for selecting a new building type
-    const addBuildingFolder = gui.addFolder("Add Building");
-    const buildingOptions = { type: "Farm" };
-    addBuildingFolder
-      .add(buildingOptions, "type", ["Farm", "Mine"])
-      .name("Building Type");
-    addBuildingFolder
-      .add(
-        { add: () => addBuilding(meshData, buildingOptions.type, player) },
-        "add"
-      )
-      .name("Add Building");
+    uiState.tileInfoText.material.map = createTextSprite(`Tile: (${meshData.tileCoordinates.x}, ${meshData.tileCoordinates.y})`);
+    uiState.buildingTypeText.material.map = createTextSprite(`Building Type: None`);
+    uiState.upgradeLevelText.material.map = createTextSprite(`Level: 0`);
   }
 }
 
-export function addBuilding(meshData, type, player) {
+export function addBuilding(meshData, type, player, uiState) {
   const cost = type === "Farm" ? 100 : type === "Mine" ? 200 : 0;
   if (player.deductResources(cost)) {
     if (meshData && !meshData.building) {
-      meshData.building = new Building(
-        type,
-        meshData.tileCoordinates,
-        meshData.biomeType
-      );
-      showInfo(meshData, player); // Update the information panel
+      meshData.building = new Building(type, meshData.tileCoordinates, meshData.biomeType);
+      updateTileInfo(meshData, uiState); // Update UI
     }
   }
 }
 
-export function upgradeBuilding(meshData, player) {
+export function upgradeBuilding(meshData, player, uiState) {
   const cost = meshData.building.level * 10;
   if (player.deductResources(cost)) {
     meshData.building.upgrade();
-    showInfo(meshData, player); // Update the information panel
+    updateTileInfo(meshData, uiState); // Update UI
   }
+}
+
+export function showInfo(meshData, player, uiState) {
+  updateTileInfo(meshData, uiState);
+
+  // Add player resources controller
+  updatePlayerResources(player, uiState);
 }
 
 // Example class method to upgrade the building
